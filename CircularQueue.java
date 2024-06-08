@@ -1,73 +1,69 @@
 package DataStructures;
 
-public class CircularQueue {
-     int maxSize;
-     int[] queueArray;
-     int front;
-     int rear;
+public class CircularQueue<T> {
+     private int capacity;
+	    private Object[] queue;
+	    private int front;
+	    private int rear;
+	    private int size;
 
-    public CircularQueue(int size) {
-        maxSize = size;
-        queueArray = new int[maxSize];
-        front = -1;
-        rear = -1;
-    }
+	    public CircularQueue(int capacity) {
+	        this.capacity = capacity;
+	        this.queue = new Object[capacity];
+	        this.front = 0;
+	        this.rear = -1;
+	        this.size = 0;
+	    }
 
-    public void enqueue(int item) {
-        if (isEmpty()) {
-            front = 0;
-            rear = 0;
-            queueArray[rear] = item;
-        } else {
-            rear = (rear + 1) % maxSize;
-            if (rear == front) {
-                System.out.println("Queue is full. Cannot enqueue.");
-                rear = (rear - 1 + maxSize) % maxSize;
-            } else {
-                queueArray[rear] = item;
-            }
-        }
-    }
+	    public void enqueue(T item) {
+	        if (isFull()) {
+	            System.out.println("Queue is full.");
+	            return;
+	        }
+	        rear = (rear + 1) % capacity;
+	        queue[rear] = item;
+	        size++;
+	    }
 
-    public int dequeue() {
-        int item = -1;
-        if (!isEmpty()) {
-            item = queueArray[front];
-            if (front == rear) {
-                front = -1;
-                rear = -1;
-            } else {
-                front = (front + 1) % maxSize;
-            }
-        } else {
-            System.out.println("Queue is empty. Cannot dequeue.");
-        }
-        return item;
-    }
+	    public T dequeue() {
+	        if (isEmpty()) {
+	            System.out.println("Queue is empty.");
+	            return null;
+	        }
+	        T removedItem = (T) queue[front];
+	        front = (front + 1) % capacity;
+	        size--;
+	        return removedItem;
+	    }
 
-    public int peek() {
-        if (!isEmpty()) {
-            return queueArray[front];
-        } else {
-            System.out.println("Queue is empty. No peek value.");
-            return -1;
-        }
-    }
+	    public boolean isEmpty() {
+	        return size == 0;
+	    }
 
-    public boolean isEmpty() {
-        return front == -1 && rear == -1;
-    }
+	    public boolean isFull() {
+	        return size == capacity;
+	    }
+
+	    public int size() {
+	        return size;
+	    }
+
 
     public static void main(String[] args) {
-        CircularQueue c = new CircularQueue(5);
-        c.enqueue(9);
-        c.enqueue(8);
-        c.enqueue(7);
+    	CircularQueue<Integer> q = new CircularQueue<>(5);
+        q.enqueue(15);
+        q.enqueue(17);
+        q.enqueue(19);
+        q.enqueue(21);
+        q.enqueue(23);
+        //q.engueue(25); Can't enqueue because the queue is full
 
-        System.out.println("Peek: " + c.peek());
-        System.out.println("Dequeue: " + c.dequeue());
-        System.out.println("Peek after dequeue: " + c.peek());
         
+        System.out.println("Circular Queue is: " +q);
+        System.out.println("Dequeued item: " + q.dequeue());
+        System.out.println("Dequeued item: " + q.dequeue());
+        System.out.println("Front item: " + q.dequeue());
+        System.out.println("Is queue empty? " + q.isEmpty());
     }
 }
 
